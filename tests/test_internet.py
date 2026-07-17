@@ -39,8 +39,9 @@ def test_fill_and_press(page: Page):
     password_field.fill("SuperSecretPassword!")
     password_field.press("Enter")
   # Store the text from the page as actual restult THEN compare against Expected Result in assert statement
-    actual_text = page.get_by_role("heading", name="Welcome to the Secure Area.").text_content()
-    expected_text = "Welcome to the Secure Area. When you are done click logout below."
+    
+    actual_text = page.get_by_role("complete-header", name="Thank you for your order!").text_content()
+    expected_text = "Thank you for your order!"
     assert expected_text in actual_text
 
     
