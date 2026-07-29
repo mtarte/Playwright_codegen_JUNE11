@@ -1,8 +1,3 @@
-# __init
-#Methods
-#Classes should have any asserts (Or Expects)
-
-
 from playwright.sync_api import Page
 
 from pages.InventoryPage import InventoryPage
@@ -20,18 +15,20 @@ class LoginPage:
         self.login_credentials = page.locator("[data-test=\"login-credentials\"]")
         self.login_password = page.locator("[data-test=\"login-password\"]")
         self.error_message = page.locator("[data-test=\"error\"]")
+        self.error_close_button = page.locator("[data-test=\"error-button\"]")
+
 
     #Methods (Wrapper)
     def open(self):
         self.page.goto("/")
 
-    def login_standard_user(self):
+    def login_standard_user(self) -> InventoryPage:
         self.username.fill("standard_user")
         self.password.fill("secret_sauce")
         self.login_button.click()
         return InventoryPage(self.page)
 
-    def login_user(self, username: str, password: str):
+    def login_user(self, username: str, password: str) -> InventoryPage:
         self.username.fill(username)
         self.password.fill(password)
         self.login_button.click()

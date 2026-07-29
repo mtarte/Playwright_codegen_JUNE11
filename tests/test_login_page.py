@@ -1,26 +1,27 @@
 from playwright.sync_api import Page
-import pytest
-
-from pages.InventoryPage import InventoryPage
+import pytest 
+ 
 from pages.LoginPage import LoginPage
-
-
+from pages.InventoryPage import InventoryPage
+ 
+ 
 def test_login_credentials(page: Page):
     login_page = LoginPage(page)
     login_page.open()
     # assert (login_page.get_login_credentials.all_text_contents()).to_contain_text("standard_user")
     assert "standard_user" in login_page.get_login_credentials().inner_html()
     assert "secret_sauce" in login_page.get_login_password().inner_html()
-
+ 
 def test_login_successful(page: Page):
     # Login Object only has to to Loging locators and Methods
     login_page = LoginPage(page)
     login_page.open()
     login_page.login_standard_user()
-    # Only has access to Invetory stuff 
+    # Only has access to Invetory stuff
     invetory_page = InventoryPage(page)
     assert invetory_page.get_title().text_content() == "Products"
-    
+   
+
 @pytest.mark.parametrize(
     "username",
     [
@@ -30,18 +31,17 @@ def test_login_successful(page: Page):
         ("visual_user"),
     ],
 )
-def test_login_standard_successful(page: Page, username):
+def test_login_successful(page: Page, username):
     # Login Object only has to to Loging locators and Methods
     login_page = LoginPage(page)
     login_page.open()
     login_page.login_user(username, "secret_sauce")
     # Only has access to Invetory stuff
     invetory_page = InventoryPage(page)
-    #page.wait_for_selector(invetory_page.get_title())
+    # page.wait_for_selector(invetory_page.get_title())
     assert invetory_page.get_title().text_content() == "Products"
 
-
-    # Negative as well
+# Negative as well
 @pytest.mark.parametrize(
     "username, error",
     [

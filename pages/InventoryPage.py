@@ -1,4 +1,8 @@
 from playwright.sync_api import Page
+import pytest
+
+from pages import LoginPage
+
 
 
 class InventoryPage:
