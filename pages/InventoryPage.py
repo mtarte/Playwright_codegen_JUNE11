@@ -1,8 +1,7 @@
 from playwright.sync_api import Page
-import pytest
 
-from pages import LoginPage
-
+# NEW: the inventory page can navigate to the cart, so it needs the cart's page object.
+from pages.CartPage import CartPage
 
 
 class InventoryPage:
@@ -19,10 +18,23 @@ class InventoryPage:
         self.sort_dropdown = page.locator("[data-test=\"product-sort-container\"]")
         self.sort_options = self.sort_dropdown.locator("option")
 
+        # NEW: the cart icon in the top-right corner
+        self.cart_link = page.locator("[data-test=\"shopping-cart-link\"]")
+
     # Methods (Wrapper)
+    def add_item_to_cart(self, item_id: str):
+        self.page.locator(f"[data-test=\"add-to-cart-{item_id}\"]").click()
+        return self
+
     def sort_products_by(self, option: str):
         # option is one of: az, za, lohi, hilo
         self.sort_dropdown.select_option(option)
+
+    # NEW: clicking the cart icon takes us to a different screen,
+    # so this method returns the CartPage object for that screen.
+    def open_cart(self) -> CartPage:
+        self.cart_link.click()
+        return CartPage(self.page)
 
     # Getters (are used for assertions later.)
     def get_title(self):

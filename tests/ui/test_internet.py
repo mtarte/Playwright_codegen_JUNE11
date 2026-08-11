@@ -1,5 +1,9 @@
+from pathlib import Path
+
 from playwright.sync_api import Page, expect 
 import pytest
+
+RESUME_FILE = Path(__file__).resolve().parent.parent / "test_data" / "resume.txt"
 
 
 def test_click_action(page: Page):
@@ -73,9 +77,9 @@ def test_hovers(page: Page):
 
 def test_upload(page: Page):
     page.goto("https://the-internet.herokuapp.com/upload")
-    #  locator of the input          path to the file
-    page.locator("#file-upload").set_input_files("/Users/tartemr/Ozzy_codegen_JUNE11/test_data/resume.txt")
+    page.locator("#file-upload").set_input_files(RESUME_FILE, force=True)
     page.locator("#file-submit").click()
+    expect(page.locator("#uploaded-files")).to_contain_text("resume.txt")
 
 
 def test_drag_and_drop(page: Page):
@@ -95,20 +99,20 @@ def test_drag_and_drop(page: Page):
 def test_download(page: Page, link: str) -> None:
     page.goto("https://the-internet.herokuapp.com/download")
     with page.expect_download() as download_info:
-        page.get_by_role("link", name=link).click()
+        page.get_by_role("link", name=link, exact=True).click()
     download = download_info.value
     assert link in str(download)
     
 def test_hidden_ad(page: Page) -> None:
     page.goto("https://the-internet.herokuapp.com/entry_ad")
     modal = page.locator("#modal")
-    # Wait for the modal to load
-    assert modal.is_visible()
+    # Wait for the modal to load (it appears after a short delay)
+    expect(modal).to_be_visible()
 
     page.get_by_text("Close", exact=True).click()
     modal.wait_for(state="hidden")
 
-    assert not modal.is_visible()
+    expect(modal).not_to_be_visible()
 
 import re
 from playwright.sync_api import Page, expect

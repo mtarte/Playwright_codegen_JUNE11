@@ -48,3 +48,5 @@ class LoginPage:
         return self.error_message
 
     # CLASSES SHOULD HAVE ANY ASSERTS(or Expects)
+
+    
