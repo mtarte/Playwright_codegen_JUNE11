@@ -4,6 +4,8 @@ __pycache__/
 *.egg-info/
 .eggs/
 
+
+
 # Virtual env
 .venv/
 
@@ -24,3 +26,5 @@ test-results/
 .DS_Store
 tests/test_setup.py
 tests/test_first.py
+
+report.html

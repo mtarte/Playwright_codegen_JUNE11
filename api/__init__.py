@@ -2,7 +2,6 @@ import pytest
 import requests
 
 from api.booking_client import BookingAPIClient
-# from tests.conftest import BASE_URL
 
 BASE_URL = "https://restful-booker.herokuapp.com"
 
@@ -19,7 +18,9 @@ def api_session():
     session.close()
 
 
-
-@pytest.fixture(scope="session")
+@pytest.fixture
 def booking_client(api_session):
-    return BookingAPIClient(api_session)     
+    return BookingAPIClient(api_session)
+  
+  
+  
