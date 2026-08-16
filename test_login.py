@@ -6,4 +6,3 @@ def test_example(page: Page) -> None:
     page.goto("https://the-internet.herokuapp.com/")
     page.get_by_role("link", name="Dropdown").click()
     page.locator("#dropdown").select_option("1")
-
