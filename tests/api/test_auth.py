@@ -1,4 +1,5 @@
 import requests
+import pytest
 
 # Creates a new auth token to use for access to the PUT and DELETE /booking
 
@@ -38,6 +39,11 @@ import requests
 #     "username": "asdsds"
 
 # }
+
+
+pytestmark = pytest.mark.api
+
+
 
 BASE_URL = "https://restful-booker.herokuapp.com"
 

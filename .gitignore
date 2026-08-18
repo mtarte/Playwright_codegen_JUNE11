@@ -18,6 +18,7 @@ __pycache__/
 allure-results/
 allure-report/
 test-results/
+report.html
 
 # Local config
 .env
@@ -27,4 +28,4 @@ test-results/
 tests/test_setup.py
 tests/test_first.py
 
-report.html
+

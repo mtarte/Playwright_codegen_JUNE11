@@ -1,8 +1,9 @@
 import re
-# import requests
+import requests
 
 from api.booking_client import BookingAPIClient
 from api.builders import make_booking
+
 
 # Request
 # curl -X POST \
@@ -20,35 +21,32 @@ from api.builders import make_booking
 #     "additionalneeds" : "Breakfast"
 # }'
 
+def test_create_booking(booking_client: BookingAPIClient):
+    payload= make_booking()
+    response = booking_client.create_booking(payload)
 
-
-def test_create_booking(booking_client:BookingAPIClient):
-    playload = make_booking()
-    response = booking_client.create_booking(playload)
-
-
-    # response = requests.post(
-    #     "https://restful-booker.herokuapp.com/booking",
-    #     json={"firstname" : "Jim",
-    #         "lastname" : "Brown",
-    #         "totalprice" : 111,
-    #         "depositpaid" : True,
-    #         "bookingdates" : {
-    #             "checkin" : "2018-01-01",
-    #             "checkout" : "2019-01-01"
-    #         },
-    #         "additionalneeds" : "Breakfast"  
-    #     },
-    #     timeout=10
-    # )
-    print(response.json())
-    # print(response.status_code)
     assert response.status_code == 200
-    print(response.json()["bookingid"])
-    assert response.json()["bookingid"]
+    assert response.json()["bookingid"] 
+    assert response.json()["booking"] == payload
 
-{'bookingid': 2363, 'booking': {'firstname': 'Jim', 'lastname': 'Brown', 'totalprice': 111, 'depositpaid': True, 'bookingdates': {'checkin': '2018-01-01', 'checkout': '2019-01-01'}, 'additionalneeds': 'Breakfast'}}
+# json={
+#     "key": "value",
+#     "nest": {
+#         "key1":"value1", 
+#         "key2":"value2" 
+#         }
+#     }
+# json["key"]
+# json.keys[0]
+# json.values[0]
+# json["nest"]["key1"]
 
+def test_create_without_field(booking_client: BookingAPIClient):
+    payload = make_booking()
+    del payload["bookingdates"]
+    r = booking_client.create_booking(payload)
+    print(r.status_code) # 400
+    assert r.status_code == 500
 
 
 
@@ -69,4 +67,3 @@ def test_create_booking(booking_client:BookingAPIClient):
 #         "additionalneeds": "Breakfast"
 #     }
 # }
-
