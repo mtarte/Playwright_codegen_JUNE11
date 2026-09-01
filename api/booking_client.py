@@ -34,3 +34,10 @@ class BookingAPIClient:
             json=payload,
             headers=self._auth_headers()
         )    
+
+    def delete_booking(self, booking_id):
+        """The LAST method — added in Lesson 17. The client is complete."""
+        return self.session.delete(
+            f"/booking/{booking_id}",
+            headers=self._auth_headers(),
+        )
