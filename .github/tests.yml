@@ -62,7 +62,7 @@ jobs:
 
 
 #------------------------------------------------------ Allure Reports--------
- report:
+  allure-report:
     name: Publish Allure report
     needs: [api, ui]      # wait for BOTH
     # A report that only publishes on green is useless: the run you most want
