@@ -1,8 +1,10 @@
+import os
 import pytest
 import requests
 
 from api.booking_client import BookingAPIClient
 from api.builders import make_booking
+
 
 BASE_URL = "https://restful-booker.herokuapp.com"
 
