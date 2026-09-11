@@ -1,6 +1,9 @@
 name: Tests
 
-on: push
+on: 
+  pull_request:
+    branches:
+      - main
 
 # ADDED 1 — lets the report job push to gh-pages.
 permissions:
