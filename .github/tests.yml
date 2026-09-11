@@ -2,7 +2,16 @@ name: Tests
 
 on: push
 
+# ADDED 1 — lets the report job push to gh-pages.
+permissions:
+  contents: write
+
+# ADDED 2 — the Install Allure CLI step below uses ${ALLURE_VERSION}.
+env:
+  ALLURE_VERSION: "2.43.0"
+
 jobs:
+  # ----------------------------------------------------------- UI (browser)
   ui-tests:
     runs-on: ubuntu-latest
     env:
@@ -31,16 +40,20 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      # ADDED 3 — the raw results the report job builds from.
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-ui
+          path: allure-results
+          if-no-files-found: ignore
+          retention-days: 7
+
   # ------------------------------------------------------ API (no browser)
-  # NEW — no `needs:` line, so this runs IN PARALLEL with ui-tests.
-  # No playwright install, no xvfb: this job finishes in about a minute.
+
   api-tests:
     runs-on: ubuntu-latest
-    env:
-      # The ROOT conftest.py demands these at import — even for API-only
-      # runs. Same secrets, same names.
-      SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
-      SAUCE_PASSWORD: ${{ secrets.SAUCE_PASSWORD }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -60,16 +73,27 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
-# ------------------------------------------------------ Generate Allure report-----------------------------
-generate-allure-report:
+      # ADDED 4 — same, for the API lane.
+      - name: Upload Allure results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results-api
+          path: allure-results
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # ------------------------------------------------------ reports
+
+  allure-report:
     name: Publish Allure report
-    needs: [api, ui]      # wait for BOTH
+    needs: [api-tests, ui-tests]      # wait for BOTH
     # A report that only publishes on green is useless: the run you most want
     # to read is the failing one.
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4       # we need scripts/ and allure/
+      - uses: actions/checkout@v4       # we need scripts/ and support/
 
       # pattern + merge-multiple pulls allure-results-api AND allure-results-ui
       # into ONE folder. Allure never knows they came from different machines.
@@ -80,10 +104,9 @@ generate-allure-report:
           merge-multiple: true
           path: allure-results
 
-      # How failures get grouped in the report: product defect vs test defect
-      # vs flaky external dependency.
+      # CHANGED 5 — categories.json now lives in support/
       - name: Add failure categories
-        run: cp allure/categories.json allure-results/ || true
+        run: cp support/categories.json allure-results/ || true
 
       # The existing site carries the history that makes trend graphs work.
       # The very first run has no gh-pages branch yet, hence continue-on-error.
@@ -168,3 +191,4 @@ generate-allure-report:
               echo "_Not published — only \`master\` publishes to Pages._"
             fi
           } >> "$GITHUB_STEP_SUMMARY"
+          
