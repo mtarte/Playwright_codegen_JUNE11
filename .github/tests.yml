@@ -1,9 +1,10 @@
-name: CI Pipeline
+name: Tests
 
-on: 
-  pull_request:
-    branches:
-      - main
+on: push
+
+# ADDED 1 — lets the report job push to gh-pages.
+permissions:
+  contents: write
 
 # ADDED 1 — lets the report job push to gh-pages.
 permissions:
